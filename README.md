@@ -1,73 +1,112 @@
-# reef_master_spa_2_ha
-reef master spa to home assistant importer
+# Reef Master Spa → Home Assistant Importer
 
+**Automatically capture and send data from a Reef Master spa screen to Home Assistant using an ESP32-CAM.**
 
+This project provides step-by-step instructions to:
 
-The goal of this project is to give a basic guidance on how to setup an esp32 cam to grab the screen from reef master spa, do OCR, and send data to home assistant!
+1. Flash an ESP32-CAM to capture images of your spa control screen.
+2. Perform OCR on those images.
+3. Send the extracted data to Home Assistant.
 
+---
 
-Now, it's required that you are familiar with a certain concepts like
-1 - arduino ide OR platform.io and how to flash an esp32 board
-2 - how to setup docker OR python
-3 - have HA installed and know how to interact with it :)
+## 📌 Prerequisites
 
+You should already be familiar with the following:
 
+- Programming and flashing ESP32 using Arduino IDE or PlatformIO.
+- Running Python or using Docker.
+- Using Home Assistant and its APIs.
 
-## STEP 0
+---
 
-clone the repo :)
+## Setup Overview
 
+### 1. Clone the Repository
 
-## STEP 1
-
-grab an esp32-cam board, i am using this one (from amazon, aliexpress LOOK the same)
-[ESP32 CAM Camera Module OV5640 Amazon it](https://www.amazon.it/dp/B0DXFF1GKV)
-[ESP32 CAM Camera Module OV5640 aliexpress](https://www.aliexpress.com/item/1005007234963618.html)
-
-now, on the esp32 folder you find the program that need to be uploaded to this board. 
-
-before you proceed change wifi settings to match your needs
-```
-  wifiMulti.addAP("wifi1", "aaa");
-  wifiMulti.addAP("wifi2", "bbb");
+```bash
+git clone https://github.com/ramarro123/reef_master_spa_2_ha.git
+cd reef_master_spa_2_ha
 ```
 
-## STEP 2
-
-print the 2 stl file on "stl" folder, this are the support for your board, when you finish it should look like that
-<insert image here>
 
 
-## STEP 3
+---
 
-put the board on the support, turn it on, connect to ip address and regulate the various parameter. parameters aren't stored, so if you reboot you are gonna loose them
-write them down, rebuild your esp32 firmware setting your preferred default from here
+### 2. Prepare the ESP32-CAM
+
+- Use an ESP32-CAM board with an OV5640 sensor, e.g.:
+  - Amazon: [ESP32 CAM Camera Module OV5640 Amazon it](https://www.amazon.it/dp/B0DXFF1GKV)
+  - AliExpress: [ESP32 CAM Camera Module OV5640 aliexpress](https://www.aliexpress.com/item/1005007234963618.html) (look similar but not verified)
+- In [arduino/main.cpp](https://github.com/ramarro123/reef_master_spa_2_ha/blob/b7876e6f92e96fe249d5a62a347671c6a5dcf474/arduino/main.cpp#L53), update your Wi‑Fi credentials:
+
+```cpp
+wifiMulti.addAP("yourSSID1", "yourPassword1");
+wifiMulti.addAP("yourSSID2", "yourPassword2");
 ```
-  // EXTRA CONFIG
-  Serial.println("Apply my personal preference");
+
+- **Important**: If you're using a different board or camera module, you'll need to adjust board settings and pin definitions.
+- Most of the code is based on the example that comes with the ESP32-CAM, so refer to that documentation as needed.
+
+---
+
+
+### 3. 3D-Print a Mount
+
+- The `stl/` folder contains two STL files for a mounting bracket.
+- Print them and assemble your ESP32-CAM using the printed mount.
+
+the final result should look like <add img>
+
+---
+
+
+### 4. Test the Camera
+
+1. Power on your ESP32-CAM. 
+2. Access the device’s web interface using its IP address. the browser should look lik ![](img/screenshot/esp32%20control.png)
+3. Adjust capture settings and click **Get Still**.
+4. Settings are temporary—note them down or embed defaults in firmware:
+
+```cpp
+// EXTRA CONFIG
+Serial.println("Apply my personal preference");
+// Adjusted values here...
 ```
 
-the list you see is the one that work in my environment, it should be the same for you hopefully
+---
 
-this is a screenshot of how control should appear, just play with them, hit "get still" and check if the image is good for you
+### 5. OCR + Data Extraction
 
-![](img/screenshot/esp32%20control.png)
+You have two options to run the Python extraction script:
 
-## STEP 4
+#### A) Docker (recommended)
 
-you have 2 option here, 1 is to use docker (Dockerfile included in python folder) or run directly the extract script.
-my suggestion is to go with docker, in the same host of home assistant, so you can leave it running forever without bothering.
-in any case you need to have opencv, easyocr, requests and numpy
+- Suitable for production setups.
+- Navigate to `python/` and build the Docker image (Dockerfile included).
+- Runs indefinitely alongside Home Assistant.
 
+#### B) Python Virtual Environment
 
-## STEP 5
+- Install dependencies:
 
-run your extract code, and check the images!
-when you run extract code, you got some "debug" png that help you to figure out what's going on.
-an example is in "data" folder here in github.
+```bash
+pip install opencv-python easyocr requests numpy
+```
 
-with this images, you can check if the webcam is aligned in the same way of mine (if not you can modify offset form extract.py) and if the pre processing
-of the image is giving good results. 
+---
+
+### 6. Run & Validate Extraction
+
+- Execute the extraction script.
+- It saves debug PNGs in the `data/` folder to verify processing steps:
+
+  1. Initial frame capture
+  2. Preprocessed/enhanced image
+  3. Final segmented image passed to OCR
+  4. Zoomed-in version for clarity
+
+Check alignment and OCR performance—adjust offsets in `extract.py` if necessary.
 
 this is how the data got extracted
 ![](img/screenshot/immagine.png)
@@ -81,10 +120,25 @@ this is the final step, the one used by OCR, if this is good, normally OCR resul
 
 ![](img/data/debug_CA_zoomed.png)
 
+---
 
-In case of help, you can reach me on this thread in reef2reef https://www.reef2reef.com/threads/kamoer-reef-master-spa-ha-integration.1116295/#post-13661376 adding the debug image
-and we can try to find a way to help you!
+## 🛠 Troubleshooting
 
+- Post debug images (e.g., `data/debug_*.png`) on the Reef2Reef thread for help:
 
+> https://www.reef2reef.com/threads/kamoer-reef-master-spa-ha-integration.1116295/
 
+- Make sure your camera view matches the expected alignment—offsets must be tweaked in `extract.py` if necessary.
 
+---
+
+## Summary
+
+| Step        | Description                                      |
+|-------------|--------------------------------------------------|
+| 1. Clone    | Download the project                            |
+| 2. Flash    | Install firmware on ESP32-CAM                   |
+| 3. Print    | 3D-print and mount your hardware                |
+| 4. Capture  | Test camera settings in the web interface       |
+| 5. Run OCR  | Use Docker or Python to extract spa screen data |
+| 6. Integrate| Send extracted values to Home Assistant         |
