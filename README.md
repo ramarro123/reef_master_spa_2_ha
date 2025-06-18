@@ -20,17 +20,18 @@ clone the repo :)
 
 ## STEP 1
 
-grab an esp32-cam board, i am using this one (from amazon, aliexpress LOOK the same)
+grab an esp32-cam board, i am using this one (from amazon, aliexpress LOOK the same but i can't confirm)
 [ESP32 CAM Camera Module OV5640 Amazon it](https://www.amazon.it/dp/B0DXFF1GKV)
 [ESP32 CAM Camera Module OV5640 aliexpress](https://www.aliexpress.com/item/1005007234963618.html)
 
 now, on the esp32 folder you find the program that need to be uploaded to this board. 
 
-before you proceed change wifi settings to match your needs
+before you proceed change wifi settings to match your needs in [main.cpp](arduino/main.cpp)
 ```
   wifiMulti.addAP("wifi1", "aaa");
   wifiMulti.addAP("wifi2", "bbb");
 ```
+
 
 ## STEP 2
 
