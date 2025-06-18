@@ -49,6 +49,9 @@ write them down, rebuild your esp32 firmware setting your preferred default from
 
 the list you see is the one that work in my environment, it should be the same for you hopefully
 
+this is a screenshot of how control should appear, just play with them, hit "get still" and check if the image is good for you
+
+![](img/screenshot/esp32%20control.png)
 
 ## STEP 4
 
@@ -66,6 +69,22 @@ an example is in "data" folder here in github.
 with this images, you can check if the webcam is aligned in the same way of mine (if not you can modify offset form extract.py) and if the pre processing
 of the image is giving good results. 
 
+this is how the data got extracted
+![](img/screenshot/immagine.png)
+and then analized in various step
+
+![](img/data/debug_CA.png)
+![](img/data/debug_CA_enhanced.png)
+![](img/data/debug_CA_processed.png)
+
+this is the final step, the one used by OCR, if this is good, normally OCR result will be good :)
+
+![](img/data/debug_CA_zoomed.png)
+
+
 In case of help, you can reach me on this thread in reef2reef https://www.reef2reef.com/threads/kamoer-reef-master-spa-ha-integration.1116295/#post-13661376 adding the debug image
 and we can try to find a way to help you!
+
+
+
 
