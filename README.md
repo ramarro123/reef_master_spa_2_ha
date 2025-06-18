@@ -34,6 +34,9 @@ before you proceed change wifi settings to match your needs in [arduino/main.cpp
   wifiMulti.addAP("wifi2", "bbb");
 ```
 
+Also, it worth nothing to say that if you use a different board and/or different camera, the above code won't work, and you need to play with it, probably to change the board type & pin of the camera.
+
+This code is 99% the one shipped with esp32_cam project, so you can refer to that for help, as i won't be able to assist (i simply don't have other camera aside the one i linked here)
 
 ## STEP 2
 
